@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Fredoka, Nunito, JetBrains_Mono } from "next/font/google";
+import { Toaster } from "sonner";
+import { AuthProvider } from "@/providers/AuthProvider";
 import "./globals.css";
 
 const fredoka = Fredoka({
@@ -36,7 +38,12 @@ export default function RootLayout({
       lang="en"
       className={`${fredoka.variable} ${nunito.variable} ${jetbrainsMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <AuthProvider>
+          {children}
+        </AuthProvider>
+        <Toaster position="top-center" richColors closeButton />
+      </body>
     </html>
   );
 }
