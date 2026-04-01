@@ -26,6 +26,18 @@ export const metadata: Metadata = {
   title: "Scribble — Draw, Guess & Laugh!",
   description:
     "A real-time multiplayer drawing and guessing game. Draw, guess, and laugh with friends!",
+  openGraph: {
+    title: "Scribble — Draw, Guess & Laugh!",
+    description: "A real-time multiplayer drawing and guessing game.",
+    type: "website",
+  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
