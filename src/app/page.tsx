@@ -1,147 +1,130 @@
 'use client';
 
-import { useState } from 'react';
-import { Mail, Lock, Search, Pencil } from 'lucide-react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Pencil, Plus, Hash } from 'lucide-react';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { Navbar } from '@/components/layout/Navbar';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Card } from '@/components/ui/Card';
-import { Avatar } from '@/components/ui/Avatar';
-import { Badge } from '@/components/ui/Badge';
-import { Spinner } from '@/components/ui/Spinner';
-import { Timer } from '@/components/ui/Timer';
-import { Modal } from '@/components/ui/Modal';
+
+const logoLetters = 'Scribble'.split('');
 
 export default function Home() {
-  const [modalOpen, setModalOpen] = useState(false);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
   return (
-    <div className="flex flex-col items-center min-h-screen gap-10 p-8 max-w-3xl mx-auto">
-      {/* Logo */}
-      <h1 className="text-6xl font-bold font-heading text-primary mt-8">
-        Scribble
-      </h1>
-      <p className="text-xl text-text-muted font-body -mt-6">
-        UI Primitives Showcase
-      </p>
+    <div className="min-h-screen flex flex-col relative overflow-hidden">
+      {/* Background doodle pattern */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%236C5CE7' stroke-width='1.5'%3E%3Ccircle cx='15' cy='15' r='6'/%3E%3Cpath d='M40 10l8 8-8 8'/%3E%3Crect x='8' y='38' width='12' height='12' rx='2'/%3E%3Cpath d='M38 38l12 12M38 50l12-12'/%3E%3C/g%3E%3C/svg%3E")`,
+          backgroundSize: '60px 60px',
+        }}
+      />
 
-      {/* ── Buttons ── */}
-      <Card className="w-full">
-        <h2 className="text-lg font-bold font-heading text-text mb-4">Buttons</h2>
-        <div className="flex flex-wrap gap-3">
-          <Button variant="primary" size="sm">Small</Button>
-          <Button variant="primary">Primary</Button>
-          <Button variant="primary" size="lg">Large</Button>
-          <Button variant="secondary">Secondary</Button>
-          <Button variant="danger">Danger</Button>
-          <Button variant="ghost">Ghost</Button>
-          <Button variant="primary" isLoading>Loading</Button>
-          <Button variant="primary" disabled>Disabled</Button>
+      <Navbar />
+
+      <main className="flex-1 flex flex-col items-center justify-center px-4 py-16 relative z-10">
+        {/* Animated logo */}
+        <div className="flex mb-4">
+          {logoLetters.map((char, i) => (
+            <motion.span
+              key={i}
+              className="text-6xl sm:text-7xl md:text-8xl font-bold font-heading text-[var(--color-primary)]"
+              initial={{ opacity: 0, y: 30, rotate: -10 }}
+              animate={{ opacity: 1, y: 0, rotate: 0 }}
+              transition={{
+                delay: i * 0.08,
+                type: 'spring',
+                stiffness: 400,
+                damping: 15,
+              }}
+            >
+              {char}
+            </motion.span>
+          ))}
         </div>
-      </Card>
 
-      {/* ── Inputs ── */}
-      <Card className="w-full">
-        <h2 className="text-lg font-bold font-heading text-text mb-4">Inputs</h2>
-        <div className="flex flex-col gap-4">
-          <Input label="Email" placeholder="you@example.com" icon={<Mail size={18} />} />
-          <Input label="Password" type="password" placeholder="Enter password" icon={<Lock size={18} />} />
-          <Input label="With Error" placeholder="Oops" error="This field is required" />
-          <Input placeholder="No label, with icon" icon={<Search size={18} />} />
-        </div>
-      </Card>
+        {/* Animated pencil drawing a squiggly line */}
+        <motion.div
+          className="mb-6"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+        >
+          <svg width="200" height="30" viewBox="0 0 200 30" className="mx-auto">
+            <motion.path
+              d="M10 15 Q30 5 50 15 Q70 25 90 15 Q110 5 130 15 Q150 25 170 15 Q180 10 190 15"
+              fill="none"
+              stroke="var(--color-primary-light)"
+              strokeWidth="3"
+              strokeLinecap="round"
+              initial={{ pathLength: 0 }}
+              animate={{ pathLength: 1 }}
+              transition={{ delay: 0.6, duration: 1.5, ease: 'easeInOut' }}
+            />
+          </svg>
+          <motion.div
+            className="flex justify-end -mt-5 mr-1"
+            initial={{ opacity: 0, x: -180 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6, duration: 1.5, ease: 'easeInOut' }}
+          >
+            <Pencil size={18} className="text-[var(--color-primary-light)]" />
+          </motion.div>
+        </motion.div>
 
-      {/* ── Cards ── */}
-      <Card className="w-full">
-        <h2 className="text-lg font-bold font-heading text-text mb-4">Cards</h2>
-        <div className="flex gap-4 flex-wrap">
-          <Card padding="sm" className="flex-1 min-w-[140px]">
-            <p className="text-sm text-text-muted">Small padding</p>
-          </Card>
-          <Card padding="md" className="flex-1 min-w-[140px]">
-            <p className="text-sm text-text-muted">Medium padding</p>
-          </Card>
-          <Card padding="lg" className="flex-1 min-w-[140px]">
-            <p className="text-sm text-text-muted">Large padding</p>
-          </Card>
-        </div>
-      </Card>
+        {/* Tagline */}
+        <motion.p
+          className="text-lg sm:text-xl text-[var(--color-text-muted)] mb-10 text-center"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          Draw, guess, and laugh with friends!
+        </motion.p>
 
-      {/* ── Avatars ── */}
-      <Card className="w-full">
-        <h2 className="text-lg font-bold font-heading text-text mb-4">Avatars</h2>
-        <div className="flex items-center gap-4">
-          <Avatar username="Alice" size="sm" />
-          <Avatar username="Bob" size="md" />
-          <Avatar username="Charlie" size="lg" />
-          <Avatar username="Diana" size="lg" />
-          <Avatar username="Eve" size="md" />
-        </div>
-      </Card>
+        {/* CTAs */}
+        <motion.div
+          className="flex flex-col sm:flex-row gap-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.5 }}
+        >
+          {isAuthenticated ? (
+            <>
+              <Link href="/lobby">
+                <Button size="lg">
+                  <Plus size={20} /> Create Room
+                </Button>
+              </Link>
+              <Link href="/lobby">
+                <Button variant="secondary" size="lg">
+                  <Hash size={20} /> Join Room
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link href="/register">
+                <Button size="lg">
+                  Get Started
+                </Button>
+              </Link>
+              <Link href="/login">
+                <Button variant="secondary" size="lg">
+                  Log In
+                </Button>
+              </Link>
+            </>
+          )}
+        </motion.div>
+      </main>
 
-      {/* ── Badges ── */}
-      <Card className="w-full">
-        <h2 className="text-lg font-bold font-heading text-text mb-4">Badges</h2>
-        <div className="flex flex-wrap gap-3">
-          <Badge>Default</Badge>
-          <Badge variant="success">Correct!</Badge>
-          <Badge variant="warning">Drawing</Badge>
-          <Badge variant="danger">Wrong</Badge>
-          <Badge variant="info">Info</Badge>
-        </div>
-      </Card>
-
-      {/* ── Spinners ── */}
-      <Card className="w-full">
-        <h2 className="text-lg font-bold font-heading text-text mb-4">Spinners</h2>
-        <div className="flex items-center gap-6">
-          <Spinner size="sm" />
-          <Spinner size="md" />
-          <Spinner size="lg" />
-        </div>
-      </Card>
-
-      {/* ── Timer ── */}
-      <Card className="w-full">
-        <h2 className="text-lg font-bold font-heading text-text mb-4">Timer</h2>
-        <div className="flex items-center gap-6">
-          <div className="flex flex-col items-center gap-1">
-            <Timer seconds={45} className="text-3xl" />
-            <span className="text-xs text-text-muted">Safe</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <Timer seconds={20} className="text-3xl" />
-            <span className="text-xs text-text-muted">Warning</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <Timer seconds={5} className="text-3xl" />
-            <span className="text-xs text-text-muted">Danger</span>
-          </div>
-          <div className="flex flex-col items-center gap-1">
-            <Timer seconds={90} className="text-3xl" />
-            <span className="text-xs text-text-muted">1:30</span>
-          </div>
-        </div>
-      </Card>
-
-      {/* ── Modal ── */}
-      <Card className="w-full">
-        <h2 className="text-lg font-bold font-heading text-text mb-4">Modal</h2>
-        <Button onClick={() => setModalOpen(true)}>
-          <Pencil size={16} /> Open Modal
-        </Button>
-        <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} title="Pick a Word!">
-          <p className="text-text-muted mb-4">
-            Choose one of the words below to start drawing.
-          </p>
-          <div className="flex gap-3">
-            <Button variant="secondary" onClick={() => setModalOpen(false)}>Cat</Button>
-            <Button variant="secondary" onClick={() => setModalOpen(false)}>Guitar</Button>
-            <Button variant="secondary" onClick={() => setModalOpen(false)}>Constellation</Button>
-          </div>
-        </Modal>
-      </Card>
-
-      <div className="pb-8" />
+      {/* Footer */}
+      <footer className="text-center py-4 text-xs text-[var(--color-text-muted)] relative z-10">
+        A multiplayer drawing game
+      </footer>
     </div>
   );
 }
