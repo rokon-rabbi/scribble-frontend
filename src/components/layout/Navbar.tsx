@@ -2,15 +2,17 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { LogOut, Trophy } from 'lucide-react';
+import { LogOut, Trophy, Volume2, VolumeX } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { Avatar } from '@/components/ui/Avatar';
 import { Button } from '@/components/ui/Button';
+import { useSoundSettings } from '@/hooks/useSound';
 
 export function Navbar() {
   const router = useRouter();
   const { isAuthenticated, user, logout } = useAuthStore();
+  const { muted, toggleMute } = useSoundSettings();
 
   function handleLogout() {
     logout();
@@ -30,6 +32,10 @@ export function Navbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-3">
+          <Button variant="ghost" size="sm" onClick={toggleMute} title={muted ? 'Unmute' : 'Mute'}>
+            {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+          </Button>
+
           <Link href="/leaderboard">
             <Button variant="ghost" size="sm">
               <Trophy size={16} /> Leaderboard
