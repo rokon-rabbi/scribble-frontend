@@ -1,8 +1,9 @@
 'use client';
 
 import { use, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { Copy, Users, Clock, Layers, Play, Wifi, WifiOff } from 'lucide-react';
+import { Copy, Users, Clock, Layers, Play, Wifi, WifiOff, Eye } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useWS } from '@/providers/WebSocketProvider';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -53,7 +54,10 @@ export default function RoomPage({ params }: RoomPageProps) {
     turnTimeSeconds: number;
   } | null>(null);
 
+  const router = useRouter();
   const [mobileTab, setMobileTab] = useState<MobileTab>('canvas');
+  const [roomNotFound, setRoomNotFound] = useState(false);
+  const [isSpectator, setIsSpectator] = useState(false);
 
   const isDrawer = user && (user.id === drawerId || user.username === drawerId);
 
@@ -68,7 +72,16 @@ export default function RoomPage({ params }: RoomPageProps) {
         roundsPerPlayer: room.roundsPerPlayer,
         turnTimeSeconds: room.turnTimeSeconds,
       });
-    }).catch(() => {});
+      // If game is already playing and user wasn't in the room, they're a spectator
+      if (room.status === 'PLAYING') {
+        setIsSpectator(true);
+      }
+    }).catch((err) => {
+      if (err.response?.status === 404) {
+        setRoomNotFound(true);
+        toast.error('Room not found');
+      }
+    });
   }, [roomCode, setRoomCode, setOwnerId]);
 
   const isOwner = user && (user.id === ownerId || user.username === ownerId);
@@ -86,6 +99,17 @@ export default function RoomPage({ params }: RoomPageProps) {
 
   function handleClearCanvas() {
     clearStrokes();
+  }
+
+  // ── Room not found → redirect ──
+  if (roomNotFound) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4 p-4">
+        <h1 className="text-2xl font-bold font-heading text-[var(--color-accent-red)]">Room Not Found</h1>
+        <p className="text-[var(--color-text-muted)]">This room doesn&apos;t exist or has been closed.</p>
+        <Button onClick={() => router.push('/lobby')}>Back to Lobby</Button>
+      </div>
+    );
   }
 
   // ════════════════════════════════════════
@@ -181,6 +205,27 @@ export default function RoomPage({ params }: RoomPageProps) {
   if (gameStatus === 'PLAYING') {
     return (
       <div className="min-h-screen flex flex-col touch-none">
+        {/* Reconnecting banner */}
+        <AnimatePresence>
+          {!isConnected && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="bg-[var(--color-accent-red)] text-white text-center text-sm font-semibold py-2 flex items-center justify-center gap-2 overflow-hidden"
+            >
+              <WifiOff size={14} /> Connection lost — reconnecting...
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Spectator notice */}
+        {isSpectator && (
+          <div className="bg-[var(--color-accent-blue)] text-white text-center text-sm font-semibold py-2 flex items-center justify-center gap-2">
+            <Eye size={14} /> You&apos;re spectating this game
+          </div>
+        )}
+
         {/* Word picker overlay (drawer only) */}
         <WordPicker onChoose={sendChooseWord} />
 
