@@ -1,65 +1,63 @@
-import Image from "next/image";
-
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+    <div className="flex flex-col items-center justify-center min-h-screen gap-8 p-8">
+      {/* Logo / Heading — Fredoka font */}
+      <h1 className="text-6xl font-bold font-heading text-primary">
+        Scribble
+      </h1>
+      <p className="text-xl text-text-muted font-body">
+        Draw, guess, and laugh with friends!
+      </p>
+
+      {/* Color palette verification */}
+      <div className="flex flex-wrap gap-3 justify-center max-w-md">
+        {[
+          { name: "Primary", className: "bg-primary" },
+          { name: "Primary Light", className: "bg-primary-light" },
+          { name: "Primary Dark", className: "bg-primary-dark" },
+          { name: "Green", className: "bg-accent-green" },
+          { name: "Red", className: "bg-accent-red" },
+          { name: "Yellow", className: "bg-accent-yellow" },
+          { name: "Blue", className: "bg-accent-blue" },
+          { name: "Orange", className: "bg-accent-orange" },
+        ].map((color) => (
+          <div key={color.name} className="flex flex-col items-center gap-1">
+            <div
+              className={`w-12 h-12 rounded-xl ${color.className}`}
+              style={{ boxShadow: "var(--shadow-sm)" }}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+            <span className="text-xs text-text-muted">{color.name}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* Font verification */}
+      <div
+        className="rounded-2xl p-6 bg-surface flex flex-col gap-3 w-full max-w-md"
+        style={{ boxShadow: "var(--shadow-md)" }}
+      >
+        <h2 className="text-2xl font-heading font-bold text-text">
+          Font Check
+        </h2>
+        <p className="font-body text-text">
+          This body text uses <strong>Nunito</strong> — rounded and readable.
+        </p>
+        <p className="font-mono text-text-muted text-sm">
+          Monospace: JetBrains Mono for timers & scores — 01:23
+        </p>
+      </div>
+
+      {/* Button samples */}
+      <div className="flex gap-3">
+        <button className="px-6 py-3 rounded-xl bg-primary text-white font-body font-semibold hover:bg-primary-light transition-colors">
+          Create Room
+        </button>
+        <button
+          className="px-6 py-3 rounded-xl bg-surface text-primary font-body font-semibold border-2 border-border hover:border-primary transition-colors"
+        >
+          Join Room
+        </button>
+      </div>
     </div>
   );
 }
